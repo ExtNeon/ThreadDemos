@@ -6,8 +6,9 @@ import sun.awt.windows.ThemeReader;
  * Created by Кирилл on 06.11.2017.
  */
 public class ThreadPriority extends Thread {
-    int counter = 0;
+
     public void run() {
+        int counter = 0;
         while (counter++ < 1000000000 && !isInterrupted()) {
 
         }
