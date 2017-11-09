@@ -10,8 +10,9 @@ public class IncThrd extends Thread {
     int i = 0;
     public void run() {
         System.out.println("Поток " + this.getName() + " запущен");
-        while(!incDataLost.stop()){i++;};
+        while(!incDataLost.stop()){++i;};
         System.out.println("Поток " + this.getName() + " остановлен. " + i + " итераций пройдено");
+        incDataLost.threadCancelled(i);
     }
 
     public IncThrd(IncrementDataLost incDataLost) {
