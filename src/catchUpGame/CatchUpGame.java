@@ -4,16 +4,18 @@ package catchUpGame;
  * Created by Кирилл on 09.11.2017.
  */
 public class CatchUpGame extends Thread {
+    private final static int DELAY_TIME = 10; //Время для задержки каждого потока
+
     int internalCounter = 0;
 
     public void run() {
-        while (!isInterrupted() && internalCounter < 200) {
+        while (internalCounter < 100) {
             if (internalCounter++ == 30) {
                 Thread.currentThread().setPriority(MIN_PRIORITY);
             }
             System.out.println(Thread.currentThread().getName() + " - " + internalCounter);
             try {
-                Thread.currentThread().sleep(10);
+                Thread.currentThread().sleep(DELAY_TIME);
             } catch (InterruptedException e) {
 
             }
@@ -30,21 +32,20 @@ public class CatchUpGame extends Thread {
         secondThread.setName("Поток с минимальным начальным приоритетом");
         firstThread.start();
         secondThread.start();
-        firstThread.join();
-        secondThread.join();
+
     }
 
     static class SecondThread extends Thread {
         int internalCounter = 0;
 
         public void run() {
-            while (!isInterrupted() && internalCounter < 200) {
+            while (internalCounter < 100) {
                 if (internalCounter++ == 30) {
                     Thread.currentThread().setPriority(MAX_PRIORITY);
                 }
                 System.out.println(Thread.currentThread().getName() + " - " + internalCounter);
                 try {
-                    Thread.currentThread().sleep(10);
+                    Thread.currentThread().sleep(DELAY_TIME);
                 } catch (InterruptedException e) {
 
                 }
