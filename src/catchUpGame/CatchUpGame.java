@@ -19,20 +19,22 @@ public class CatchUpGame {
     }
 
     static class SideThread extends Thread {
-        int internalCounter = 0;
         private final static int DELAY_TIME = 10; //Время для задержки потока
 
-        public void run() {
-            while (internalCounter < 100) {
-                if (internalCounter++ == 30) {
-                    Thread.currentThread().setPriority(Thread.currentThread().getPriority() == MAX_PRIORITY ? MIN_PRIORITY : MAX_PRIORITY);
-                }
-                System.out.println(Thread.currentThread().getName() + " - " + internalCounter);
-                try {
-                    Thread.currentThread().sleep(DELAY_TIME);
-                } catch (InterruptedException e) {
+        private void printInfoAndSleep(int internalCounter) {
+            System.out.println(Thread.currentThread().getName() + " - " + internalCounter);
+            try {
+                Thread.currentThread().sleep(DELAY_TIME);
+            } catch (InterruptedException e) {}
+        }
 
-                }
+        public void run() {
+            for (int internalCounter = 0; internalCounter < 30; internalCounter++) {
+                printInfoAndSleep(internalCounter);
+            }
+            Thread.currentThread().setPriority(Thread.currentThread().getPriority() == MAX_PRIORITY ? MIN_PRIORITY : MAX_PRIORITY);
+            for (int internalCounter = 30; internalCounter < 100; internalCounter++) {
+                printInfoAndSleep(internalCounter);
             }
             System.out.println(Thread.currentThread().getName() + " закончил работу");
         }
