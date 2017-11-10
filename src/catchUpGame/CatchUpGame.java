@@ -1,7 +1,8 @@
 package catchUpGame;
 
 /**
- * Created by Кирилл on 09.11.2017.
+ * Класс, демонстрирующий поведение потоков при изменении приоритета.
+ * @author Малякин Кирилл. гр. 15-20
  */
 public class CatchUpGame extends Thread {
     private final static int DELAY_TIME = 10; //Время для задержки каждого потока
