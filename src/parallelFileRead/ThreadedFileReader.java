@@ -10,6 +10,8 @@ import java.util.ArrayList;
  */
 public class ThreadedFileReader extends Thread {
 
+
+    private boolean readedSuccessful = false; //Флаг того, что у нас всё прочиталось.
     private BufferedReader reader;
 
     private ArrayList<String> buffer; //Решил сделать таким образом, так как получить одну строку становится проще.
@@ -24,6 +26,7 @@ public class ThreadedFileReader extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        readedSuccessful = true;
     }
 
     public ThreadedFileReader(String inputFileName) {
@@ -38,6 +41,9 @@ public class ThreadedFileReader extends Thread {
     }
 
     public String getLine(int index) {
+        if (!readedSuccessful) {
+            return "";
+        }
         if (index < 0) {
             throw new InvalidParameterException("Index cannot be lower zero");
         }
@@ -45,6 +51,9 @@ public class ThreadedFileReader extends Thread {
     }
 
     public int getCountOfLines() {
+        if (!readedSuccessful) {
+            return -1;
+        }
         return buffer.size();
     }
 
