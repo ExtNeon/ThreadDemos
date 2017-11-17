@@ -17,31 +17,36 @@ public class ThreadedFileReader extends Thread {
     private ArrayList<String> buffer; //Решил сделать таким образом, так как получить одну строку становится проще.
 
     public void run() {
-        String tempString;
-        try {
-            while((tempString = reader.readLine()) != null) {
-                buffer.add(tempString);
+        if (!readedSuccessful) { //Защита от дурака на повторное чтение.
+            String tempString;
+            try {
+                while ((tempString = reader.readLine()) != null) {
+                    buffer.add(tempString);
+                }
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            readedSuccessful = true;
         }
-        readedSuccessful = true;
     }
 
     public ThreadedFileReader(String inputFileName) {
-        super();
         try {
             reader = new BufferedReader(new FileReader(inputFileName));
             buffer = new ArrayList();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.start(); //Начинаем читать немедленно после создания.
+        //this.start(); //Начинаем читать немедленно после создания.
+    }
+
+    public void allowRead() {
+        this.start();
     }
 
     public String getLine(int index) {
-        if (!readedSuccessful) {
+        if (this.isAlive()) {
             return "";
         }
         if (index < 0) {
@@ -51,7 +56,7 @@ public class ThreadedFileReader extends Thread {
     }
 
     public int getCountOfLines() {
-        if (!readedSuccessful) {
+        if (this.isAlive()) {
             return -1;
         }
         return buffer.size();
