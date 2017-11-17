@@ -16,8 +16,7 @@ public class Main {
         ThreadedFileReader secondFile = new ThreadedFileReader(SECOND_FILE);
         firstFile.allowRead();
         secondFile.allowRead();
-        try {
-            BufferedWriter resultFile = new BufferedWriter(new FileWriter(RESULT_FILE));
+        try (BufferedWriter resultFile = new BufferedWriter(new FileWriter(RESULT_FILE))) {
             firstFile.join();
             secondFile.join();
             for (int i = 0; i < firstFile.getCountOfLines() || i < secondFile.getCountOfLines(); i++) {
