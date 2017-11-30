@@ -1,18 +1,21 @@
 package fileProcessingTimeComparsion;
 
 /**
- * Created by Кирилл on 23.11.2017.
+ * Класс - тест. Копирует один файл двумя способами: сначала последовательно, затем параллельно.
+ * Замеряет время, за которое произошло копирование в каждом случае и выводит разницу.
+ * @author Малякин Кирилл. Гр. 15 - 20.
  */
 public class Main {
-    private static final String firstInputFile = "src\\fileProcessingTimeComparsion\\files\\input1.txt";
-    private static final String firstOutputFile = "src\\fileProcessingTimeComparsion\\files\\output1.txt";
-    private static final String secondInputFile = "src\\fileProcessingTimeComparsion\\files\\input2.txt";
-    private static final String secondOutputFile = "src\\fileProcessingTimeComparsion\\files\\output2.txt";
+    private static final String INPUT_FILE = "src\\fileProcessingTimeComparsion\\files\\input.txt";
+    private static final String FIRST_OUTPUT_FILE = "src\\fileProcessingTimeComparsion\\files\\output1.txt";
+    private static final String SECOND_OUTPUT_FILE = "src\\fileProcessingTimeComparsion\\files\\output2.txt";
 
     public static void main(String args[]) {
-        serialTest();
-        parallelTest();
-        System.out.println("Тесты выполнены успешно");
+        long firstTestTime = serialTest();
+        long secondTestTime = parallelTest();
+        System.out.println("\nТесты выполнены успешно. Выиграл " +
+                (firstTestTime < secondTestTime ? "первый тест": "второй тест") + " (" + firstTestTime + '/' + secondTestTime + ").\n" +
+                "При этом, разница между ними была " + Math.abs(firstTestTime - secondTestTime) + " миллисекунд, а всего было затрачено " + (firstTestTime + secondTestTime) + " миллисекунд");
     }
 
     /**
@@ -20,9 +23,9 @@ public class Main {
      * Алгоритм: скопировать первый файл и замерить время, в течение которого он копировался, затем повторить
      * те же действия со вторым файлом. Вывести время, затраченное обоими потоками.
      */
-    private static void serialTest() {
-        FileCopyProcessor firstFileCopyProcessor = new FileCopyProcessor(firstInputFile, firstOutputFile);
-        FileCopyProcessor secondFileCopyProcessor = new FileCopyProcessor(secondInputFile, secondOutputFile);
+    private static long serialTest() {
+        FileCopyProcessor firstFileCopyProcessor = new FileCopyProcessor(INPUT_FILE, FIRST_OUTPUT_FILE);
+        FileCopyProcessor secondFileCopyProcessor = new FileCopyProcessor(INPUT_FILE, SECOND_OUTPUT_FILE);
 
         System.out.println("Тест первый: последовательное копирование файлов.");
         System.out.print("Запуск первого потока... ");
@@ -33,8 +36,9 @@ public class Main {
 
         long secondThreadTimeWaste = measureTimeOfSingleThreadRunning(secondFileCopyProcessor);
         System.out.println("Второй поток завершил работу, затратив " + secondThreadTimeWaste + " миллисекунд.");
-
-        System.out.println("\nПервый тест завершён. В общей сложности затрачено " + (firstThreadTimeWaste + secondThreadTimeWaste) + " миллисекунд");
+        long allThreadsTimeWaste = firstThreadTimeWaste + secondThreadTimeWaste;
+        System.out.println("\nПервый тест завершён. В общей сложности затрачено " + allThreadsTimeWaste + " миллисекунд");
+        return allThreadsTimeWaste;
     }
 
     /**
@@ -42,9 +46,9 @@ public class Main {
      * Алгоритм: запустить копирование первого и второго файлов в разных потоках; вывести время, затраченное
      * обоими потоками.
      */
-    private static void parallelTest() {
-        FileCopyProcessor firstFileCopyProcessor = new FileCopyProcessor(firstInputFile, firstOutputFile);
-        FileCopyProcessor secondFileCopyProcessor = new FileCopyProcessor(secondInputFile, secondOutputFile);
+    private static long parallelTest() {
+        FileCopyProcessor firstFileCopyProcessor = new FileCopyProcessor(INPUT_FILE, FIRST_OUTPUT_FILE);
+        FileCopyProcessor secondFileCopyProcessor = new FileCopyProcessor(INPUT_FILE, SECOND_OUTPUT_FILE);
 
         System.out.println("\n\nТест второй: параллельное копирование файлов.");
         System.out.print("Запуск потоков... ");
@@ -52,6 +56,7 @@ public class Main {
         long allThreadsTimeWaste = measureTimeOfTwoParallelThreadsRunning(firstFileCopyProcessor, secondFileCopyProcessor);
 
         System.out.println("Второй тест завершён. В общей сложности затрачено " + allThreadsTimeWaste + " миллисекунд");
+        return allThreadsTimeWaste;
     }
 
     /**
@@ -87,7 +92,7 @@ public class Main {
         try {
             firstThread.join();
             secondThread.join();
-        } catch (InterruptedException e) {};
+        } catch (InterruptedException e) {}
         return System.currentTimeMillis() - lastMSecCount;
     }
 }

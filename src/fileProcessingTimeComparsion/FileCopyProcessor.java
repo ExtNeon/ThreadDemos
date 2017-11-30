@@ -3,7 +3,8 @@ package fileProcessingTimeComparsion;
 import java.io.*;
 
 /**
- * Created by Кирилл on 23.11.2017.
+ * Данный класс копирует файл целиком в отдельном потоке.
+ * @author Малякин Кирилл. Гр. 15 - 20.
  */
 public class FileCopyProcessor extends Thread {
     private String inputFileName;
@@ -22,7 +23,7 @@ public class FileCopyProcessor extends Thread {
         }
     }
 
-    public FileCopyProcessor(String inputFileName, String outputFileName) {
+    FileCopyProcessor(String inputFileName, String outputFileName) {
         this.inputFileName = inputFileName;
         this.outputFileName = outputFileName;
     }
